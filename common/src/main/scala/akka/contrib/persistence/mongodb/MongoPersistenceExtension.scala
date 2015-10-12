@@ -22,7 +22,7 @@ object MongoPersistenceExtension extends ExtensionId[MongoPersistenceExtension] 
   override def createExtension(actorSystem: ExtendedActorSystem) = {
     val settings = MongoSettings(actorSystem.settings)
     val implementation = settings.Implementation
-    val implType = Class.forName(implementation)
+    val implType = Thread.currentThread().getContextClassLoader().loadClass(implementation)
     val implCons = implType.getConstructor(classOf[ActorSystem])
     implCons.newInstance(actorSystem).asInstanceOf[MongoPersistenceExtension]
   }

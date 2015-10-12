@@ -111,7 +111,7 @@ object Payload {
 
   def apply[D](hint: String, any: Any, clazzName: Option[String], serManifest: Option[String])(implicit evs: Serialization, ev: Manifest[D], dt: DocumentType[D]):Payload = (hint,any) match {
     case ("ser",ser:Array[Byte]) if clazzName.isDefined =>
-      val clazz = Class.forName(clazzName.get).asInstanceOf[Class[X forSome {type X <: AnyRef}]]
+      val clazz = Thread.currentThread().getContextClassLoader().loadClass(clazzName.get).asInstanceOf[Class[X forSome {type X <: AnyRef}]]
       Serialized(ser, clazz, serManifest)
     case ("bson",d:D) => Bson(d)
     case ("bin",b:Array[Byte]) => Bin(b)
